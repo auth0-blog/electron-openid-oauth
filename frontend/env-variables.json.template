@@ -1,0 +1,7 @@
+{
+  "apiIdentifier": "<API_IDENTIFIER>",
+  "appDomain": "custom-domain",
+  "appScheme": "custom-scheme",
+  "auth0Domain": "<YOUR_AUTH0_TENANT>.auth0.com",
+  "clientId": "<YOUR_AUTH0_CLIENT_ID>"
+}
