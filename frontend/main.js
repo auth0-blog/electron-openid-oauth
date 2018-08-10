@@ -22,7 +22,7 @@ async function showWindow() {
       return destroyAuthWin();
     }
 
-    callback(`${__dirname}/renderer/${requestedURL}`);
+    callback(`${__dirname}/renderers/${requestedURL}`);
   }, (err) => {
     if (err) return console.error(err);
   });
