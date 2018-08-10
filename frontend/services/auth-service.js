@@ -3,7 +3,7 @@ const jwtDecode = require('jwt-decode');
 const request = require('request');
 const url = require('url');
 const envVariables = require('../env-variables');
-const storeService = require('../service/store-service');
+const storeService = require('./store-service');
 
 const {apiIdentifier, appDomain, appScheme, auth0Domain, clientId} = envVariables;
 

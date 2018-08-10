@@ -1,5 +1,5 @@
 const {BrowserWindow} = require('electron');
-const authService = require('../service/auth-service');
+const authService = require('../services/auth-service');
 
 let win = null;
 
