@@ -1,4 +1,3 @@
-const crypto = require('crypto');
 const jwtDecode = require('jwt-decode');
 const request = require('request');
 const url = require('url');
@@ -8,9 +7,6 @@ const storeService = require('./store-service');
 const {apiIdentifier, appDomain, appScheme, auth0Domain, clientId} = envVariables;
 
 const redirectUri = `${appScheme}://${appDomain}/callback`;
-
-const verifier = base64URLEncode(crypto.randomBytes(32));
-const challenge = base64URLEncode(sha256(verifier));
 
 let accessToken = null;
 let profile = null;
@@ -30,8 +26,6 @@ function getAuthenticationURL() {
     'scope=openid profile offline_access&' +
     'response_type=code&' +
     'client_id=' + clientId + '&' +
-    'code_challenge=' + challenge + '&' +
-    'code_challenge_method=S256&' +
     'redirect_uri=' + redirectUri;
 }
 
@@ -73,7 +67,6 @@ function loadTokens(callbackURL) {
     const exchangeOptions = {
       'grant_type': 'authorization_code',
       'client_id': clientId,
-      'code_verifier': verifier,
       'code': query.code,
       'redirect_uri': redirectUri,
     };
@@ -110,17 +103,6 @@ function logout() {
   accessToken = null;
   profile = null;
   refreshToken = null;
-}
-
-function base64URLEncode(str) {
-  return str.toString('base64')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-    .replace(/=/g, '');
-}
-
-function sha256(buffer) {
-  return crypto.createHash('sha256').update(buffer).digest();
 }
 
 module.exports = {
