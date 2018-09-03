@@ -1,9 +1,6 @@
 const {BrowserWindow, ipcMain} = require('electron');
 const request = require('request');
-const envVariables = require('../env-variables');
 const authService = require('../services/auth-service');
-
-const {appDomain, appScheme} = envVariables;
 
 module.exports = function createAppWindow() {
   let win = new BrowserWindow({
@@ -40,7 +37,7 @@ module.exports = function createAppWindow() {
     win.close();
   });
 
-  win.loadURL(`${appScheme}://${appDomain}/home.html`);
+  win.loadURL(`file:///home.html`);
 
   win.on('closed', () => {
     win = null;

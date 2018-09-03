@@ -1,30 +1,13 @@
 const {app, protocol} = require('electron');
 
-const envVariables = require('./env-variables');
-const {createAuthWindow, destroyAuthWin} = require('./main/auth-process');
+const createAuthWindow = require('./main/auth-process');
 const createAppWindow = require('./main/app-process');
 const authService = require('./services/auth-service');
 
-const {appDomain, appScheme} = envVariables;
-
-// needed, otherwise localstorage, sessionstorage, cookies, etc, become unavailable
-// https://electronjs.org/docs/api/protocol#methods
-protocol.registerStandardSchemes([appScheme]);
-
 async function showWindow() {
-
-  protocol.registerFileProtocol(appScheme, async (req, callback) => {
-    const requestedURL = req.url.replace(`${appScheme}://${appDomain}/`, '').substring(0, req.url.length - 1);
-
-    if (requestedURL.indexOf('callback') === 0) {
-      await authService.loadTokens(requestedURL);
-      createAppWindow();
-      return destroyAuthWin();
-    }
-
-    callback(`${__dirname}/renderers/${requestedURL}`);
-  }, (err) => {
-    if (err) return console.error(err);
+  protocol.interceptFileProtocol('file', async (request, callback) => {
+    const requestedURL = request.url.replace('file:///', '');
+    callback({path: `${__dirname}/renderers/${requestedURL}`});
   });
 
   try {

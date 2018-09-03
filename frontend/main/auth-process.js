@@ -1,5 +1,6 @@
 const {BrowserWindow} = require('electron');
 const authService = require('../services/auth-service');
+const createAppWindow = require('../main/app-process');
 
 let win = null;
 
@@ -23,6 +24,13 @@ function createAuthWindow() {
 
   win.loadURL(authService.getAuthenticationURL());
 
+  win.webContents.on('did-get-redirect-request', async (event, oldUrl, callbackUrl) => {
+    if (callbackUrl.indexOf('file:///callback') < 0) return;
+    await authService.loadTokens(callbackUrl);
+    createAppWindow();
+    return destroyAuthWin();
+  });
+
   win.on('authenticated', () => {
     destroyAuthWin();
   });
@@ -32,7 +40,4 @@ function createAuthWindow() {
   });
 }
 
-module.exports = {
-  createAuthWindow,
-  destroyAuthWin,
-};
+module.exports = createAuthWindow;

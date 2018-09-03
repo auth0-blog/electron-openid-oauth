@@ -4,9 +4,9 @@ const url = require('url');
 const envVariables = require('../env-variables');
 const storeService = require('./store-service');
 
-const {apiIdentifier, appDomain, appScheme, auth0Domain, clientId} = envVariables;
+const {apiIdentifier, auth0Domain, clientId} = envVariables;
 
-const redirectUri = `${appScheme}://${appDomain}/callback`;
+const redirectUri = `file:///callback`;
 
 let accessToken = null;
 let profile = null;
