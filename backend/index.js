@@ -1,12 +1,9 @@
-const cors = require('cors');
 const express = require('express');
 const jwt = require('express-jwt');
 const jwksRsa = require('jwks-rsa');
 const envVariables = require('./env-variables.json');
 
 const app = express();
-
-app.use(cors());
 
 app.get('/public', (req, res) => res.send('Everyone in the world can read this message.'));
 
