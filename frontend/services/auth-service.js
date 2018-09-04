@@ -35,10 +35,12 @@ function refreshTokens() {
 
     if (!refreshToken) return reject();
 
-    const refreshOptions = { method: 'POST',
+    const refreshOptions = {
+      method: 'POST',
       url: `https://${auth0Domain}/oauth/token`,
-      headers: { 'content-type': 'application/json' },
-      body: { grant_type: 'refresh_token',
+      headers: {'content-type': 'application/json'},
+      body: {
+        grant_type: 'refresh_token',
         client_id: clientId,
         refresh_token: storeService.get('refresh-token')
       },

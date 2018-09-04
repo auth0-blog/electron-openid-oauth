@@ -9,7 +9,7 @@ const configPath = path.join(userDataPath, 'electron-app-config.json');
 let data = null;
 try {
   data = JSON.parse(fs.readFileSync(configPath));
-} catch(error) {
+} catch (error) {
   data = {};
 }
 

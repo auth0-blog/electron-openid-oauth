@@ -1,15 +1,10 @@
-const {app, protocol} = require('electron');
+const {app} = require('electron');
 
 const createAuthWindow = require('./main/auth-process');
 const createAppWindow = require('./main/app-process');
 const authService = require('./services/auth-service');
 
 async function showWindow() {
-  protocol.interceptFileProtocol('file', async (request, callback) => {
-    const requestedURL = request.url.replace('file:///', '');
-    callback({path: `${__dirname}/renderers/${requestedURL}`});
-  });
-
   try {
     await authService.refreshTokens();
     return createAppWindow();
