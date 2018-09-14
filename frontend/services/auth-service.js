@@ -2,11 +2,15 @@ const jwtDecode = require('jwt-decode');
 const request = require('request');
 const url = require('url');
 const envVariables = require('../env-variables');
-const storeService = require('./store-service');
+const keytar = require('keytar');
+const os = require('os');
 
 const {apiIdentifier, auth0Domain, clientId} = envVariables;
 
 const redirectUri = `file:///callback`;
+
+const keytarService = 'electron-openid-oauth';
+const keytarAccount = os.userInfo().username;
 
 let accessToken = null;
 let profile = null;
@@ -30,8 +34,8 @@ function getAuthenticationURL() {
 }
 
 function refreshTokens() {
-  return new Promise((resolve, reject) => {
-    const refreshToken = storeService.get('refresh-token');
+  return new Promise(async (resolve, reject) => {
+    const refreshToken = await keytar.getPassword(keytarService, keytarAccount);
 
     if (!refreshToken) return reject();
 
@@ -42,7 +46,7 @@ function refreshTokens() {
       body: {
         grant_type: 'refresh_token',
         client_id: clientId,
-        refresh_token: storeService.get('refresh-token')
+        refresh_token: refreshToken,
       },
       json: true,
     };
@@ -93,15 +97,15 @@ function loadTokens(callbackURL) {
       profile = jwtDecode(responseBody.id_token);
       refreshToken = responseBody.refresh_token;
 
-      storeService.set('refresh-token', refreshToken);
+      keytar.setPassword(keytarService, keytarAccount, refreshToken);
 
       resolve();
     });
   });
 }
 
-function logout() {
-  storeService.remove('refresh-token');
+async function logout() {
+  await keytar.deletePassword(keytarService, keytarAccount);
   accessToken = null;
   profile = null;
   refreshToken = null;
