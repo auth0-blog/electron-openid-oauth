@@ -24,9 +24,16 @@ function createAuthWindow() {
 
   win.loadURL(authService.getAuthenticationURL());
 
-  win.webContents.on('did-get-redirect-request', async (event, oldUrl, callbackUrl) => {
-    if (callbackUrl.indexOf('file:///callback') < 0) return;
-    await authService.loadTokens(callbackUrl);
+  const {session: {webRequest}} = win.webContents;
+
+  const filter = {
+    urls: [
+      'file:///callback*'
+    ]
+  };
+
+  webRequest.onBeforeRequest(filter, async ({url}) => {
+    await authService.loadTokens(url);
     createAppWindow();
     return destroyAuthWin();
   });
