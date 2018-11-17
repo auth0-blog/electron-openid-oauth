@@ -52,9 +52,9 @@ function refreshTokens() {
     };
 
     request(refreshOptions, function (error, response, body) {
-      if (error) {
+      if (error || body.error) {
         logout();
-        return reject();
+        return reject(error || body.error);
       }
 
       accessToken = body.access_token;
@@ -87,9 +87,9 @@ function loadTokens(callbackURL) {
     };
 
     request(options, (error, resp, body) => {
-      if (error) {
+      if (error || body.error) {
         logout();
-        return reject(error);
+        return reject(error || body.error);
       }
 
       const responseBody = JSON.parse(body);
