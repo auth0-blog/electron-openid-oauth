@@ -105,10 +105,16 @@ function loadTokens(callbackURL) {
 }
 
 async function logout() {
-  await keytar.deletePassword(keytarService, keytarAccount);
-  accessToken = null;
-  profile = null;
-  refreshToken = null;
+  return new Promise(resolve => {
+    request(`https://${auth0Domain}/v2/logout`, async () => {
+      await keytar.deletePassword(keytarService, keytarAccount);
+      accessToken = null;
+      profile = null;
+      refreshToken = null;
+
+      resolve();
+    });
+  })
 }
 
 module.exports = {

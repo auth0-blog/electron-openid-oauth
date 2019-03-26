@@ -11,8 +11,8 @@ webContents.on('dom-ready', () => {
   document.getElementById('success').innerText = 'You successfully used OpenID Connect and OAuth 2.0 to authenticate.';
 });
 
-document.getElementById('logout').onclick = () => {
-  authService.logout();
+document.getElementById('logout').onclick = async () => {
+  await authService.logout();
   remote.getCurrentWindow().close();
 };
 
