@@ -6,17 +6,14 @@
   "scripts": {
     "start": "electron ./"
   },
-  "keywords": [],
   "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "electron": "^3.0.4",
-    "electron-rebuild": "^1.8.2"
-  },
+  "devDependencies": {},
   "dependencies": {
     "axios": "^0.18.0",
+    "electron": "^4.1.4",
+    "electron-rebuild": "^1.8.4",
     "jwt-decode": "^2.2.0",
-    "keytar": "^4.3.0",
+    "keytar": "^4.4.1",
     "request": "^2.88.0"
   }
 }
