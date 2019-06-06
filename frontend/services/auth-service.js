@@ -51,9 +51,9 @@ function refreshTokens() {
       json: true,
     };
 
-    request(refreshOptions, function (error, response, body) {
+    request(refreshOptions, async function (error, response, body) {
       if (error || body.error) {
-        logout();
+        await logout();
         return reject(error || body.error);
       }
 
@@ -86,9 +86,9 @@ function loadTokens(callbackURL) {
       body: JSON.stringify(exchangeOptions),
     };
 
-    request(options, (error, resp, body) => {
+    request(options, async (error, resp, body) => {
       if (error || body.error) {
-        logout();
+        await logout();
         return reject(error || body.error);
       }
 
@@ -105,21 +105,20 @@ function loadTokens(callbackURL) {
 }
 
 async function logout() {
-  return new Promise(resolve => {
-    request(`https://${auth0Domain}/v2/logout`, async () => {
-      await keytar.deletePassword(keytarService, keytarAccount);
-      accessToken = null;
-      profile = null;
-      refreshToken = null;
+  await keytar.deletePassword(keytarService, keytarAccount);
+  accessToken = null;
+  profile = null;
+  refreshToken = null;
+}
 
-      resolve();
-    });
-  })
+function getLogOutUrl() {
+  return `https://${auth0Domain}/v2/logout`;
 }
 
 module.exports = {
   getAccessToken,
   getAuthenticationURL,
+  getLogOutUrl,
   getProfile,
   loadTokens,
   logout,

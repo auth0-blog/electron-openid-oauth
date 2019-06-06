@@ -47,4 +47,26 @@ function createAuthWindow() {
   });
 }
 
-module.exports = createAuthWindow;
+function createLogoutWindow() {
+  return new Promise(resolve => {
+    const logoutWindow = new BrowserWindow({
+      show: false,
+      webPreferences: {
+        nodeIntegration: false,
+      },
+    });
+
+    logoutWindow.loadURL(authService.getLogOutUrl());
+
+    logoutWindow.on('ready-to-show', async () => {
+      logoutWindow.close();
+      await authService.logout();
+      resolve();
+    });
+  });
+}
+
+module.exports = {
+  createAuthWindow,
+  createLogoutWindow,
+};
