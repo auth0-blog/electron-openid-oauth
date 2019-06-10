@@ -4,12 +4,6 @@ const createAppWindow = require('../main/app-process');
 
 let win = null;
 
-function destroyAuthWin() {
-  if (!win) return;
-  win.close();
-  win = null;
-}
-
 function createAuthWindow() {
   destroyAuthWin();
 
@@ -17,9 +11,6 @@ function createAuthWindow() {
   win = new BrowserWindow({
     width: 1000,
     height: 600,
-    webPreferences: {
-      nodeIntegration: false,
-    },
   });
 
   win.loadURL(authService.getAuthenticationURL());
@@ -47,13 +38,16 @@ function createAuthWindow() {
   });
 }
 
+function destroyAuthWin() {
+  if (!win) return;
+  win.close();
+  win = null;
+}
+
 function createLogoutWindow() {
   return new Promise(resolve => {
     const logoutWindow = new BrowserWindow({
       show: false,
-      webPreferences: {
-        nodeIntegration: false,
-      },
     });
 
     logoutWindow.loadURL(authService.getLogOutUrl());
