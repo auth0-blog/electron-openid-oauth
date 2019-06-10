@@ -2,42 +2,42 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
-    <title>Electron App</title>
-    <link rel="stylesheet"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
-          integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-          crossorigin="anonymous">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta http-equiv="Content-Security-Policy" content="script-src 'self'">
+  <title>Electron App</title>
+  <link rel="stylesheet"
+        href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
 
-    <link rel="stylesheet" href="home.css">
+  <link rel="stylesheet" href="home.css">
 </head>
 
 <body>
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
-    <div class="profile">
-        <div><a class="navbar-brand" href="#">Electron App</a></div>
-        <img id="picture"/>
-        <span id="name"></span>
-        <button id="logout" class="btn">Logout</button>
-    </div>
+  <div class="profile">
+    <div><a class="navbar-brand" href="#">Electron App</a></div>
+    <img id="picture"/>
+    <span id="name"></span>
+    <button id="logout" class="btn">Logout</button>
+  </div>
 </nav>
 <div class="container-fluid">
-    <div class="row">
-        <div class="col-sm">
-            <h1>Electron App</h1>
-            <p>This Electron application is secured with OpenID Connect and OAuth 2.0.</p>
-        </div>
+  <div class="row">
+    <div class="col-sm">
+      <h1>Electron App</h1>
+      <p>This Electron application is secured with OpenID Connect and OAuth 2.0.</p>
     </div>
-    <div class="row">
-        <div class="col-sm">
-            <div id="success" class="alert alert-success"></div>
-            <div id="message" class="jumbotron"></div>
-            <button id="secured-request" class="btn btn-primary">Get Private Message</button>
-        </div>
+  </div>
+  <div class="row">
+    <div class="col-sm">
+      <div id="success" class="alert alert-success"></div>
+      <div id="message" class="jumbotron"></div>
+      <button id="secured-request" class="btn btn-primary">Get Private Message</button>
     </div>
+  </div>
 
 </div>
 </body>
