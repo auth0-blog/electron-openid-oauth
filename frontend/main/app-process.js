@@ -6,7 +6,7 @@ function createAppWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true
-    },
+    }
   });
 
   win.loadFile('./renderers/home.html');
