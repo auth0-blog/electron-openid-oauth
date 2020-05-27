@@ -90,7 +90,9 @@ async function loadTokens(callbackURL) {
     profile = jwtDecode(response.data.id_token);
     refreshToken = response.data.refresh_token;
 
-    keytar.setPassword(keytarService, keytarAccount, refreshToken);
+    if (refreshToken) {
+      await keytar.setPassword(keytarService, keytarAccount, refreshToken);
+    }
   } catch (error) {
     await logout();
 
