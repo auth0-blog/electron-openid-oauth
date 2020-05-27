@@ -49,18 +49,15 @@ function destroyAuthWin() {
 }
 
 function createLogoutWindow() {
-  return new Promise(resolve => {
-    const logoutWindow = new BrowserWindow({
-      show: false,
-    });
+  const logoutWindow = new BrowserWindow({
+    show: false,
+  });
 
-    logoutWindow.loadURL(authService.getLogOutUrl());
+  logoutWindow.loadURL(authService.getLogOutUrl());
 
-    logoutWindow.on('ready-to-show', async () => {
-      logoutWindow.close();
-      await authService.logout();
-      resolve();
-    });
+  logoutWindow.on('ready-to-show', async () => {
+    logoutWindow.close();
+    await authService.logout();
   });
 }
 

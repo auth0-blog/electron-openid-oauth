@@ -33,12 +33,10 @@ function getAuthenticationURL() {
     'redirect_uri=' + redirectUri;
 }
 
-function refreshTokens() {
-  return new Promise(async (resolve, reject) => {
-    const refreshToken = await keytar.getPassword(keytarService, keytarAccount);
+async function refreshTokens() {
+  const refreshToken = await keytar.getPassword(keytarService, keytarAccount);
 
-    if (!refreshToken) return reject();
-
+  if (refreshToken) {
     const refreshOptions = {
       method: 'POST',
       url: `https://${auth0Domain}/oauth/token`,
@@ -49,59 +47,55 @@ function refreshTokens() {
         refresh_token: refreshToken,
       }
     };
-
+  
     try {
       const response = await axios(refreshOptions);
-
+  
       accessToken = response.data.access_token;
-      profile = jwtDecode(response.data.id_token);
-
-      resolve();
+      profile = jwtDecode(response.data.id_token);  
     } catch (error) {
       await logout();
-
-      return reject(error);
-    }
-  });
+  
+      throw error;
+    }  
+  } else {
+    throw new Error("No available refresh token.");
+  }
 }
 
-function loadTokens(callbackURL) {
-  return new Promise(async (resolve, reject) => {
-    const urlParts = url.parse(callbackURL, true);
-    const query = urlParts.query;
+async function loadTokens(callbackURL) {
+  const urlParts = url.parse(callbackURL, true);
+  const query = urlParts.query;
 
-    const exchangeOptions = {
-      'grant_type': 'authorization_code',
-      'client_id': clientId,
-      'code': query.code,
-      'redirect_uri': redirectUri,
-    };
+  const exchangeOptions = {
+    'grant_type': 'authorization_code',
+    'client_id': clientId,
+    'code': query.code,
+    'redirect_uri': redirectUri,
+  };
 
-    const options = {
-      method: 'POST',
-      url: `https://${auth0Domain}/oauth/token`,
-      headers: {
-        'content-type': 'application/json'
-      },
-      data: JSON.stringify(exchangeOptions),
-    };
+  const options = {
+    method: 'POST',
+    url: `https://${auth0Domain}/oauth/token`,
+    headers: {
+      'content-type': 'application/json'
+    },
+    data: JSON.stringify(exchangeOptions),
+  };
 
-    try {
-      const response = await axios(options);
+  try {
+    const response = await axios(options);
 
-      accessToken = response.data.access_token;
-      profile = jwtDecode(response.data.id_token);
-      refreshToken = response.data.refresh_token;
+    accessToken = response.data.access_token;
+    profile = jwtDecode(response.data.id_token);
+    refreshToken = response.data.refresh_token;
 
-      keytar.setPassword(keytarService, keytarAccount, refreshToken);
+    keytar.setPassword(keytarService, keytarAccount, refreshToken);
+  } catch (error) {
+    await logout();
 
-      resolve();
-    } catch (error) {
-      await logout();
-
-      return reject(error);
-    }
-  });
+    throw error;
+  }
 }
 
 async function logout() {
