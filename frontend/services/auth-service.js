@@ -1,5 +1,5 @@
 const jwtDecode = require('jwt-decode');
-const request = require('request');
+const axios = require('axios');
 const url = require('url');
 const envVariables = require('../env-variables');
 const keytar = require('keytar');
@@ -43,30 +43,30 @@ function refreshTokens() {
       method: 'POST',
       url: `https://${auth0Domain}/oauth/token`,
       headers: {'content-type': 'application/json'},
-      body: {
+      data: {
         grant_type: 'refresh_token',
         client_id: clientId,
         refresh_token: refreshToken,
-      },
-      json: true,
+      }
     };
 
-    request(refreshOptions, async function (error, response, body) {
-      if (error || body.error) {
-        await logout();
-        return reject(error || body.error);
-      }
+    try {
+      const response = await axios(refreshOptions);
 
-      accessToken = body.access_token;
-      profile = jwtDecode(body.id_token);
+      accessToken = response.data.access_token;
+      profile = jwtDecode(response.data.id_token);
 
       resolve();
-    });
+    } catch (error) {
+      await logout();
+
+      return reject(error);
+    }
   });
 }
 
 function loadTokens(callbackURL) {
-  return new Promise((resolve, reject) => {
+  return new Promise(async (resolve, reject) => {
     const urlParts = url.parse(callbackURL, true);
     const query = urlParts.query;
 
@@ -83,24 +83,24 @@ function loadTokens(callbackURL) {
       headers: {
         'content-type': 'application/json'
       },
-      body: JSON.stringify(exchangeOptions),
+      data: JSON.stringify(exchangeOptions),
     };
 
-    request(options, async (error, resp, body) => {
-      if (error || body.error) {
-        await logout();
-        return reject(error || body.error);
-      }
+    try {
+      const response = await axios(options);
 
-      const responseBody = JSON.parse(body);
-      accessToken = responseBody.access_token;
-      profile = jwtDecode(responseBody.id_token);
-      refreshToken = responseBody.refresh_token;
+      accessToken = response.data.access_token;
+      profile = jwtDecode(response.data.id_token);
+      refreshToken = response.data.refresh_token;
 
       keytar.setPassword(keytarService, keytarAccount, refreshToken);
 
       resolve();
-    });
+    } catch (error) {
+      await logout();
+
+      return reject(error);
+    }
   });
 }
 
