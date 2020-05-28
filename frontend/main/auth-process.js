@@ -7,7 +7,6 @@ let win = null;
 function createAuthWindow() {
   destroyAuthWin();
 
-  // Create the browser window.
   win = new BrowserWindow({
     width: 1000,
     height: 600,
