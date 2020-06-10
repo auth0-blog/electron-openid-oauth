@@ -1,34 +1,35 @@
 # Securing Electron Applications with OpenID Connect and OAuth 2.0
 
-Learn how to secure your Electron applications using standards like OpenID Connect and OAuth 2.0. This article originally appeared on Auth0 Blog: [How to Secure Electron Apps with OpenID Connect and OAuth 2.0](https://auth0.com/blog/securing-electron-applications-with-openid-connect-and-oauth-2/)
+Learn how to secure your Electron applications using standards like OpenID Connect and OAuth 2.0.
+
+This is the sample Electron project from the article published on Auth0 Blog: [How to Secure Electron Apps with OpenID Connect and OAuth 2.0](https://auth0.com/blog/securing-electron-applications-with-openid-connect-and-oauth-2/)
 
 ---
-## Sample From the Article:
+### Technology
 
-**TL;DR:** In this article, you will learn how to secure Electron applications with OpenID Connect and OAuth 2.0. You don't need to be an expert in any of these technologies to follow this article along because the instructions will guide you through the whole thing. However, if you want to [learn about OpenID Connect, you can check this documentation](https://auth0.com/docs/protocols/oidc) and, [if you want to learn about OAuth, you can check this one](https://auth0.com/docs/protocols/oauth2).
+This project uses the following technologies:
 
-### Prerequisites
+- [Node.js](https://nodejs.org/)
+- [Electron](https://www.electronjs.org/)
+- [Auth0](https://auth0.com/)
 
-To follow this article along without trouble, you are expected to have some basic skills with Node.js and JavaScript. JavaScript is mandatory but, if you don't know Node.js, you might still be able to move through the article.
+### Running the Demo
 
-However, you do have to [have Node.js and NPM properly installed](https://nodejs.org/en/download/) in your machine. Also, some familiarity with Shell, Bash, and alike is desirable. If you are on Windows, [PowerShell](https://docs.microsoft.com/en-us/powershell/) might be the solution to your needs.
+To run this project, follow these steps:
 
-### What Will you Build
+1. Clone this repository (`git clone https://github.com/auth0-blog/electron-openid-oauth`)
+2. Move to the `electron-openid-oauth/backend`  folder in your machine and run `npm install`
+3. [Register the API with Auth0](https://auth0.com/blog/securing-electron-applications-with-openid-connect-and-oauth-2/#Call-a-Secure-API-within-Electron)
+4. Rename the `env-variables.json.template` config file into `env-variables.json` and fill the required Auth0 parameters
+5. Launch the API by running `npm start`
+6. Move to the `electron-openid-oauth/frontend`  folder in your machine and run `npm install`
+7. [Register the Electron application with Auth0](https://auth0.com/blog/securing-electron-applications-with-openid-connect-and-oauth-2/#Register-an-Electron-Application-with-Auth0)
+8. Rename the `env-variables.json.template` config file into `env-variables.json` and fill the required Auth0 parameters
+9. Launch the Electron app by running `npm start`
 
-To demonstrate how to secure Electron apps with OpenID Connect and OAuth 2.0, you are going to put together two projects. The first one is, as you might expect, an Electron application. The second one is a (very) basic RESTful API that you will use Node.js and Express to run. The backend will contain a single endpoint (`/private`) that will represent an API that only performs its job if the incoming requests have access tokens. If these requests do have valid access tokens, this endpoint will respond with a static message saying "Only authenticated users can read this message".
+The following is a screenshot of the Electron application screen after logging in and clicking the *Get Private Message* button:
 
-Although this backend API is basic, this single endpoint is enough to demonstrate how you would secure your real-world APIs (e.g., RESTful resources). That is, if you were developing a to-do list, a shopping cart feature, or anything like that, the approach would be the same.
-
-> "An Access Token is a string representing granted permissions." - [OAuth 2.0 documentation @ Auth0](https://auth0.com/docs/protocols/oauth2)
-
-The flow of the application will be the following:
-
-1. Your users will start the Electron application.
-2. As they were not signed in before, you Electron app will show them a login screen (a page provided by the authorization server).
-3. After authenticating, the authorization server will provide your Electron app a _code_.
-4. The Electron app will issue a request to a token endpoint to exchange this _code_ for an [access token](https://auth0.com/docs/tokens/access-token) and an [id token](https://auth0.com/docs/tokens/id-token).
-5. After getting back these tokens, the Electron app will show a secured route with where users will be able to click a button to fetch the static message from the `/private` endpoint on the API.
-
-Although simple, this workflow shows the whole picture of how you will have to integrate and secure your backend APIs and Electron apps while using OAuth 2.0 and OpenID Connect. The following screenshot shows what the app will look like when ready.
+![The Electron App](./the-final-electron-app.png)
 
 [Read more](https://auth0.com/blog/securing-electron-applications-with-openid-connect-and-oauth-2/)
+
