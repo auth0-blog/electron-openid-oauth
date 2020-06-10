@@ -1,5 +1,0 @@
-{
-  "apiIdentifier": "<API_IDENTIFIER>",
-  "auth0Domain": "<YOUR_AUTH0_TENANT>.auth0.com",
-  "clientId": "<YOUR_AUTH0_CLIENT_ID>"
-}
