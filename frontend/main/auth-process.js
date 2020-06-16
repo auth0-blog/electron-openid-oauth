@@ -7,10 +7,13 @@ let win = null;
 function createAuthWindow() {
   destroyAuthWin();
 
-  // Create the browser window.
   win = new BrowserWindow({
     width: 1000,
     height: 600,
+    webPreferences: {
+      nodeIntegration: false,
+      enableRemoteModule: false
+    }
   });
 
   win.loadURL(authService.getAuthenticationURL());
@@ -19,7 +22,7 @@ function createAuthWindow() {
 
   const filter = {
     urls: [
-      'file:///callback*'
+      'http://localhost/callback*'
     ]
   };
 
@@ -45,18 +48,15 @@ function destroyAuthWin() {
 }
 
 function createLogoutWindow() {
-  return new Promise(resolve => {
-    const logoutWindow = new BrowserWindow({
-      show: false,
-    });
+  const logoutWindow = new BrowserWindow({
+    show: false,
+  });
 
-    logoutWindow.loadURL(authService.getLogOutUrl());
+  logoutWindow.loadURL(authService.getLogOutUrl());
 
-    logoutWindow.on('ready-to-show', async () => {
-      logoutWindow.close();
-      await authService.logout();
-      resolve();
-    });
+  logoutWindow.on('ready-to-show', async () => {
+    logoutWindow.close();
+    await authService.logout();
   });
 }
 

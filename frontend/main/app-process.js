@@ -5,8 +5,9 @@ function createAppWindow() {
     width: 1000,
     height: 600,
     webPreferences: {
-      nodeIntegration: true
-    },
+      nodeIntegration: true,
+      enableRemoteModule: true
+    }
   });
 
   win.loadFile('./renderers/home.html');

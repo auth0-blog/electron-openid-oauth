@@ -1,5 +1,5 @@
 const jwtDecode = require('jwt-decode');
-const request = require('request');
+const axios = require('axios');
 const url = require('url');
 const envVariables = require('../env-variables');
 const keytar = require('keytar');
@@ -7,7 +7,7 @@ const os = require('os');
 
 const {apiIdentifier, auth0Domain, clientId} = envVariables;
 
-const redirectUri = `file:///callback`;
+const redirectUri = 'http://localhost/callback';
 
 const keytarService = 'electron-openid-oauth';
 const keytarAccount = os.userInfo().username;
@@ -33,75 +33,71 @@ function getAuthenticationURL() {
     'redirect_uri=' + redirectUri;
 }
 
-function refreshTokens() {
-  return new Promise(async (resolve, reject) => {
-    const refreshToken = await keytar.getPassword(keytarService, keytarAccount);
+async function refreshTokens() {
+  const refreshToken = await keytar.getPassword(keytarService, keytarAccount);
 
-    if (!refreshToken) return reject();
-
+  if (refreshToken) {
     const refreshOptions = {
       method: 'POST',
       url: `https://${auth0Domain}/oauth/token`,
       headers: {'content-type': 'application/json'},
-      body: {
+      data: {
         grant_type: 'refresh_token',
         client_id: clientId,
         refresh_token: refreshToken,
-      },
-      json: true,
-    };
-
-    request(refreshOptions, async function (error, response, body) {
-      if (error || body.error) {
-        await logout();
-        return reject(error || body.error);
       }
-
-      accessToken = body.access_token;
-      profile = jwtDecode(body.id_token);
-
-      resolve();
-    });
-  });
+    };
+  
+    try {
+      const response = await axios(refreshOptions);
+  
+      accessToken = response.data.access_token;
+      profile = jwtDecode(response.data.id_token);  
+    } catch (error) {
+      await logout();
+  
+      throw error;
+    }  
+  } else {
+    throw new Error("No available refresh token.");
+  }
 }
 
-function loadTokens(callbackURL) {
-  return new Promise((resolve, reject) => {
-    const urlParts = url.parse(callbackURL, true);
-    const query = urlParts.query;
+async function loadTokens(callbackURL) {
+  const urlParts = url.parse(callbackURL, true);
+  const query = urlParts.query;
 
-    const exchangeOptions = {
-      'grant_type': 'authorization_code',
-      'client_id': clientId,
-      'code': query.code,
-      'redirect_uri': redirectUri,
-    };
+  const exchangeOptions = {
+    'grant_type': 'authorization_code',
+    'client_id': clientId,
+    'code': query.code,
+    'redirect_uri': redirectUri,
+  };
 
-    const options = {
-      method: 'POST',
-      url: `https://${auth0Domain}/oauth/token`,
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(exchangeOptions),
-    };
+  const options = {
+    method: 'POST',
+    url: `https://${auth0Domain}/oauth/token`,
+    headers: {
+      'content-type': 'application/json'
+    },
+    data: JSON.stringify(exchangeOptions),
+  };
 
-    request(options, async (error, resp, body) => {
-      if (error || body.error) {
-        await logout();
-        return reject(error || body.error);
-      }
+  try {
+    const response = await axios(options);
 
-      const responseBody = JSON.parse(body);
-      accessToken = responseBody.access_token;
-      profile = jwtDecode(responseBody.id_token);
-      refreshToken = responseBody.refresh_token;
+    accessToken = response.data.access_token;
+    profile = jwtDecode(response.data.id_token);
+    refreshToken = response.data.refresh_token;
 
-      keytar.setPassword(keytarService, keytarAccount, refreshToken);
+    if (refreshToken) {
+      await keytar.setPassword(keytarService, keytarAccount, refreshToken);
+    }
+  } catch (error) {
+    await logout();
 
-      resolve();
-    });
-  });
+    throw error;
+  }
 }
 
 async function logout() {
