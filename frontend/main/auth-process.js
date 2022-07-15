@@ -1,4 +1,4 @@
-const {BrowserWindow} = require('electron');
+const { BrowserWindow } = require ('electron');
 const authService = require('../services/auth-service');
 const createAppWindow = require('../main/app-process');
 
@@ -55,8 +55,8 @@ function createLogoutWindow() {
   logoutWindow.loadURL(authService.getLogOutUrl());
 
   logoutWindow.on('ready-to-show', async () => {
-    logoutWindow.close();
     await authService.logout();
+    logoutWindow.close();
   });
 }
 
