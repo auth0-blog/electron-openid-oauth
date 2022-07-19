@@ -10,8 +10,7 @@
   "author": "Bruno Krebs <krebs.bruno@gmail.com>",
   "license": "MIT",
   "devDependencies": {
-    "electron": "^19.0.8",
-    "electron-rebuild": "^3.2.8"
+    "electron": "^19.0.8"
   },
   "dependencies": {
     "axios": "^0.27.2",
