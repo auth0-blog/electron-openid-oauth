@@ -47,17 +47,17 @@ async function refreshTokens() {
         refresh_token: refreshToken,
       }
     };
-  
+
     try {
       const response = await axios(refreshOptions);
-  
+
       accessToken = response.data.access_token;
-      profile = jwtDecode(response.data.id_token);  
+      profile = jwtDecode(response.data.id_token);
     } catch (error) {
       await logout();
-  
+
       throw error;
-    }  
+    }
   } else {
     throw new Error("No available refresh token.");
   }
